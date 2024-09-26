@@ -38,11 +38,11 @@ jobs:
         id: ruff_lint
         run: |
           # Run Ruff and save output to a file
-          ruff . --config .ruff.toml --format text > lint-results.txt || true
+          ruff check . --config .ruff.toml --format text > lint-results.txt || true
           # Count total files checked
-          TOTAL_FILES=$(ruff . --config .ruff.toml --format json | jq '.summary.files')
+          TOTAL_FILES=$(ruff check . --config .ruff.toml --format json | jq '.summary.files')
           # Count the number of lint issues
-          LINT_ISSUES=$(ruff . --config .ruff.toml --format json | jq '.summary.issues')
+          LINT_ISSUES=$(ruff check . --config .ruff.toml --format json | jq '.summary.issues')
           # Calculate percentage passing (for badge)
           PASSING_PERCENTAGE=$((100 - LINT_ISSUES * 100 / TOTAL_FILES))
           echo "TOTAL_FILES=$TOTAL_FILES" >> $GITHUB_ENV

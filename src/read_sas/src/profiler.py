@@ -14,7 +14,15 @@ class Profiler:
         self.profiler.disable()
         self.profiler.print_stats(sort="tottime")
 
-    def __call__(self, func):
+    def print_stats(self):
+        self.profiler.print_stats(sort="tottime")
+
+    def reset(self):
+        self.profiler.clear_stats()
+
+    def profile(self, func):
+        """Decorator to profile a function."""
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             self.profiler.enable()
@@ -24,9 +32,3 @@ class Profiler:
             return result
 
         return wrapper
-
-    def print_stats(self):
-        self.profiler.print_stats(sort="tottime")
-
-    def reset(self):
-        self.profiler.clear_stats()

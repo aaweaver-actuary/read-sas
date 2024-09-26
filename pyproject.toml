@@ -2,14 +2,8 @@
 name = "read-sas"
 version = "0.1.0"
 description = "Add your description here"
-authors = [
-    { name = "Andy Weaver", email = "andrewayersweaver@gmail.com" }
-]
-dependencies = [
-    "pandas>=2.2.3",
-    "polars>=1.8.2",
-    "pyreadstat>=1.2.7",
-]
+authors = [{ name = "Andy Weaver", email = "andrewayersweaver@gmail.com" }]
+dependencies = ["pandas>=2.0", "polars>=1.5", "pyreadstat>=1.2.7"]
 readme = "README.md"
 requires-python = ">= 3.8"
 

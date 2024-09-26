@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Generator
 import pandas as pd
 from read_sas.src._format_filepath import _format_filepath
 from read_sas.src.config import Config
@@ -11,7 +12,7 @@ from read_sas.src.timer import timer
 @timer
 def get_sas_table_iterator(
     filepath: str | Path, config: Config, column_list: list[str] | str | None = None
-) -> pd.io.sas.SAS7BDATReader:
+) -> Generator[pd.DataFrame, None, None]:
     """Return an iterator to read a SAS file in chunks."""
     formatted_filepath = _format_filepath(filepath)
     return pd.read_sas(

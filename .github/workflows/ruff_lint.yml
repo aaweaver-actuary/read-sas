@@ -38,7 +38,7 @@ jobs:
         id: ruff_lint
         run: |
           # Run Ruff and get statistics
-          ruff check . --config .ruff.toml --statistics --format json > lint-results.json
+          ruff check . --config .ruff.toml --statistics > lint-results.json
 
           # Extract the number of files and issues from statistics
           TOTAL_FILES=$(jq '.files' < lint-results.json)

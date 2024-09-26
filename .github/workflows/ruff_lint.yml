@@ -40,25 +40,26 @@ jobs:
           # Run Ruff and get statistics in plain text
           ruff check . --config .ruff.toml --statistics > lint-results.txt
 
-          # Extract number of files and issues from the statistics
-          TOTAL_FILES=$(grep "files" lint-results.txt | grep -o '[0-9]\+')
-          LINT_ISSUES=$(grep "errors" lint-results.txt | grep -o '[0-9]\+')
+          # # Extract number of files and issues from the statistics
+          # TOTAL_FILES=$(grep "files" lint-results.txt | grep -o '[0-9]\+')
+          # LINT_ISSUES=$(grep "errors" lint-results.txt | grep -o '[0-9]\+')
 
-          # Calculate percentage passing (for badge)
-          if [ "$TOTAL_FILES" -eq 0 ]; then
-            PASSING_PERCENTAGE=100
-          else
-            PASSING_PERCENTAGE=$((100 - LINT_ISSUES * 100 / TOTAL_FILES))
-          fi
+          # # Calculate percentage passing (for badge)
+          # if [ "$TOTAL_FILES" -eq 0 ]; then
+          #   PASSING_PERCENTAGE=100
+          # else
+          #   PASSING_PERCENTAGE=$((100 - LINT_ISSUES * 100 / TOTAL_FILES))
+          # fi
 
-          echo "TOTAL_FILES=$TOTAL_FILES" >> $GITHUB_ENV
-          echo "LINT_ISSUES=$LINT_ISSUES" >> $GITHUB_ENV
-          echo "PASSING_PERCENTAGE=$PASSING_PERCENTAGE" >> $GITHUB_ENV
+          # echo "TOTAL_FILES=$TOTAL_FILES" >> $GITHUB_ENV
+          # echo "LINT_ISSUES=$LINT_ISSUES" >> $GITHUB_ENV
+          # echo "PASSING_PERCENTAGE=$PASSING_PERCENTAGE" >> $GITHUB_ENV
 
       # Generate badge using shields.io and curl
       - name: Generate Lint Badge
         run: |
-          curl -o badge.svg "https://img.shields.io/badge/Linting-$PASSING_PERCENTAGE%25-brightgreen"
+          curl -o badge.svg "https://img.shields.io/badge/Linting-25%25-brightgreen"
+          # curl -o badge.svg "https://img.shields.io/badge/Linting-$PASSING_PERCENTAGE%25-brightgreen"
 
       # Upload badge to repo (optional step to store the badge in the repo)
       - name: Upload Badge
@@ -66,3 +67,10 @@ jobs:
         with:
           name: lint-badge
           path: badge.svg
+
+      # Upload lint results to repo (optional step to store the lint results in the repo)
+      - name: Upload Lint Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-results
+          path: lint-results.txt

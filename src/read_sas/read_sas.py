@@ -23,7 +23,10 @@ class ReadSas:
         self._filename = _format_filepath(filename)
         self._config = Config(**(config_kwargs or {}))
         self._formatter = formatter
-        self._reader = sas_reader(self._filename, self._config, self._formatter)
+        self._column_list = column_list
+        self._reader = sas_reader(
+            self._filename, self._config, self._formatter, self._column_list
+        )
 
     @property
     def filename(self) -> Path:
@@ -36,6 +39,10 @@ class ReadSas:
     @property
     def reader(self) -> pl.LazyFrame:
         return self._reader
+
+    @property
+    def column_list(self) -> list[str] | str | None:
+        return self._column_list
 
     @timer
     @Profiler.profile

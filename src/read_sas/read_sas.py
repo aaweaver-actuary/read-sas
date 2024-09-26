@@ -45,7 +45,6 @@ class ReadSas:
         return self._column_list
 
     @timer
-    @Profiler.profile
     def run(self) -> None:
         filename = self.filename.stem
         folder = self.config.temp_dir_parent / f"temp__{filename}"

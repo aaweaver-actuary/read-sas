@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
 import logging
-from read_sas.src.logger import logger
-from read_sas.src.profiler import Profiler
+from read_sas.src._logger import logger
+from read_sas.src._profiler import Profiler
 
 
 @dataclass

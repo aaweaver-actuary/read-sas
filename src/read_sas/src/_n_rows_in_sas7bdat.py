@@ -1,7 +1,7 @@
-from read_sas.src._format_filepath import _format_filepath
+from read_sas.src.__format_filepath import _format_filepath
 from pathlib import Path
 import pyreadstat
-from read_sas.src.timer import timer
+from read_sas.src._timer import timer
 
 
 @timer

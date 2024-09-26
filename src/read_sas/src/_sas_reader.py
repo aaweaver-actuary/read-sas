@@ -3,13 +3,13 @@ from typing import Callable, Generator
 from pathlib import Path
 import polars as pl
 import pyreadstat
-from read_sas.src.config import Config
-from read_sas.src._format_filepath import _format_filepath
-from read_sas.src.n_rows_in_sas7bdat import n_rows_in_sas7bdat
-from read_sas.src.n_gb_in_file import n_gb_in_file
-from read_sas.src._calculate_chunk_size import _calculate_chunk_size
+from read_sas.src._config import Config
+from read_sas.src.__format_filepath import _format_filepath
+from read_sas.src._n_rows_in_sas7bdat import n_rows_in_sas7bdat
+from read_sas.src._n_gb_in_file import n_gb_in_file
+from read_sas.src.__calculate_chunk_size import _calculate_chunk_size
 from multiprocessing import cpu_count
-from read_sas.src.timer import timer
+from read_sas.src._timer import timer
 
 
 @timer

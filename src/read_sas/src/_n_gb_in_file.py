@@ -1,6 +1,6 @@
 from pathlib import Path
-from read_sas.src.config import Config
-from read_sas.src.timer import timer
+from read_sas.src._config import Config
+from read_sas.src._timer import timer
 
 @timer
 def n_gb_in_file(filepath: str | Path, config: Config) -> float:

@@ -1,5 +1,5 @@
 from pathlib import Path
-from read_sas.src.config import Config
+from read_sas.src._config import Config
 
 
 def _format_filepath(filepath: str | Path, config: Config) -> Path:

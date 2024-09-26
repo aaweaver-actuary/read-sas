@@ -1,7 +1,7 @@
 from typing import Callable
 from read_sas.src import (
     Config,
-    _timer,
+    timer,
     sas_reader,
     _format_filepath,
     Profiler,
@@ -44,7 +44,7 @@ class ReadSas:
     def column_list(self) -> list[str] | str | None:
         return self._column_list
 
-    @_timer
+    @timer
     def run(self) -> None:
         filename = self.filename.stem
         folder = self.config.temp_dir_parent / f"temp__{filename}"

@@ -6,6 +6,7 @@ from read_sas.src._sas_reader import sas_reader
 from read_sas.src.__format_filepath import _format_filepath
 from read_sas.src._was_file_created_in_last_week import was_file_created_in_last_week
 from read_sas.src._profiler import Profiler
+from read_sas.src._timer import timer
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "_format_filepath",
     "was_file_created_in_last_week",
     "Profiler",
+    "timer",
 ]

@@ -1,0 +1,51 @@
+from typing import Callable
+from read_sas.src import (
+    Config,
+    sas_reader,
+    _format_filepath,
+    timer,
+    profiler,
+    was_file_created_in_last_week,
+)
+import polars as pl
+from pathlib import Path
+
+
+class ReadSas:
+    def __init__(
+        self,
+        filename: str | Path,
+        formatter: Callable[pl.LazyFrame, pl.LazyFrame] | None = None,
+        column_list: list[str] | str | None = None,
+        config_kwargs: dict | None = None,
+    ) -> None:
+        """Main function to read a SAS file."""
+        self._filename = _format_filepath(filename)
+        self._config = Config(**(config_kwargs or {}))
+        self._formatter = formatter
+        self._reader = sas_reader(self._filename, self._config, self._formatter)
+
+    @property
+    def filename(self) -> Path:
+        return self._filename
+
+    @property
+    def config(self) -> Config:
+        return self._config
+
+    @property
+    def reader(self) -> pl.LazyFrame:
+        return self._reader
+
+    @timer
+    @profiler.Profiler
+    def run(self) -> None:
+        filename = self.filename.stem
+        folder = self.config.temp_dir_parent / f"temp__{filename}"
+        folder.mkdir(parents=True, exist_ok=True)
+
+        if was_file_created_in_last_week(folder / f"{filename}.parquet"):
+            return pl.read_parquet(folder / f"{filename}.parquet")
+
+        self.reader.collect().write_parquet(folder / f"{filename}.parquet")
+        return pl.read_parquet(folder / f"{filename}.parquet")

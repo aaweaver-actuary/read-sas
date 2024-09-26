@@ -1,6 +1,8 @@
 from pathlib import Path
 from read_sas.src.config import Config
+from read_sas.src.timer import timer
 
+@timer
 def n_gb_in_file(filepath: str | Path, config: Config) -> float:
     """Return the size of the file in Gb."""
     if isinstance(filepath, str):

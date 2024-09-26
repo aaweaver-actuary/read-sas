@@ -7,14 +7,22 @@
 #   all-features: false
 #   with-sources: false
 #   generate-hashes: false
-#   universal: false
 
 -e file:.
 numpy==2.1.1
+    # via pandas
 pandas==2.2.3
+    # via pyreadstat
+    # via read-sas
 polars==1.8.2
+    # via read-sas
 pyreadstat==1.2.7
+    # via read-sas
 python-dateutil==2.9.0.post0
+    # via pandas
 pytz==2024.2
+    # via pandas
 six==1.16.0
+    # via python-dateutil
 tzdata==2024.2
+    # via pandas

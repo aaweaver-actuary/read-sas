@@ -1,0 +1,59 @@
+name: Lint Code with Ruff
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run Ruff Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code in the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Install ruff
+      - name: Install Ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      # Run Ruff linter and save the output
+      - name: Run Ruff Lint
+        id: ruff_lint
+        run: |
+          # Run Ruff and save output to a file
+          ruff . --config .ruff.toml --format text > lint-results.txt || true
+          # Count total files checked
+          TOTAL_FILES=$(ruff . --config .ruff.toml --format json | jq '.summary.files')
+          # Count the number of lint issues
+          LINT_ISSUES=$(ruff . --config .ruff.toml --format json | jq '.summary.issues')
+          # Calculate percentage passing (for badge)
+          PASSING_PERCENTAGE=$((100 - LINT_ISSUES * 100 / TOTAL_FILES))
+          echo "TOTAL_FILES=$TOTAL_FILES" >> $GITHUB_ENV
+          echo "LINT_ISSUES=$LINT_ISSUES" >> $GITHUB_ENV
+          echo "PASSING_PERCENTAGE=$PASSING_PERCENTAGE" >> $GITHUB_ENV
+
+      # Generate badge using shields.io and curl
+      - name: Generate Lint Badge
+        run: |
+          curl -o badge.svg "https://img.shields.io/badge/Linting-$PASSING_PERCENTAGE%25-brightgreen"
+
+      # Upload badge to repo (optional step to store the badge in the repo)
+      - name: Upload Badge
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-badge
+          path: badge.svg

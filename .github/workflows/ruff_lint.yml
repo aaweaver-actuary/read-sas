@@ -38,7 +38,7 @@ jobs:
         id: ruff_lint
         run: |
           # Run Ruff and save output to a file
-          ruff check . --config .ruff.toml --output-format text > lint-results.txt || true
+          ruff check . --config .ruff.toml --output-format full > lint-results.txt || true
           # Count total files checked
           TOTAL_FILES=$(ruff check . --config .ruff.toml --output-format json | jq '.summary.files')
           # Count the number of lint issues

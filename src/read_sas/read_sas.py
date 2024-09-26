@@ -4,7 +4,7 @@ from read_sas.src import (
     sas_reader,
     _format_filepath,
     timer,
-    profiler,
+    Profiler,
     was_file_created_in_last_week,
 )
 import polars as pl
@@ -38,7 +38,7 @@ class ReadSas:
         return self._reader
 
     @timer
-    @profiler.Profiler
+    @Profiler.profile
     def run(self) -> None:
         filename = self.filename.stem
         folder = self.config.temp_dir_parent / f"temp__{filename}"

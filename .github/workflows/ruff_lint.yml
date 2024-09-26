@@ -1,5 +1,8 @@
 name: Lint Code with Ruff
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
+
 on:
   push:
     branches:
@@ -45,6 +48,8 @@ jobs:
           echo "TOTAL_FILES=$TOTAL_FILES" >> $GITHUB_ENV
           echo "LINT_ISSUES=$LINT_ISSUES" >> $GITHUB_ENV
           echo "PASSING_PERCENTAGE=$PASSING_PERCENTAGE" >> $GITHUB_ENV
+          echo "------------------------------------"
+          echo $GITHUB_ENV
 
       # Generate badge using shields.io and curl
       - name: Generate Lint Badge
@@ -53,7 +58,7 @@ jobs:
 
       # Upload badge to repo (optional step to store the badge in the repo)
       - name: Upload Badge
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lint-badge
           path: badge.svg

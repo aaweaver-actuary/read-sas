@@ -33,16 +33,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff
 
-      # Run Ruff linter and save the output
+        # Run Ruff linter and parse the output
       - name: Run Ruff Lint
         id: ruff_lint
         run: |
-          # Run Ruff and get statistics
-          ruff check . --config .ruff.toml --statistics > lint-results.json
+          # Run Ruff and get statistics in plain text
+          ruff check . --config .ruff.toml --statistics > lint-results.txt
 
-          # Extract the number of files and issues from statistics
-          TOTAL_FILES=$(jq '.files' < lint-results.json)
-          LINT_ISSUES=$(jq '.errors' < lint-results.json)
+          # Extract number of files and issues from the statistics
+          TOTAL_FILES=$(grep "files" lint-results.txt | grep -o '[0-9]\+')
+          LINT_ISSUES=$(grep "errors" lint-results.txt | grep -o '[0-9]\+')
 
           # Calculate percentage passing (for badge)
           if [ "$TOTAL_FILES" -eq 0 ]; then

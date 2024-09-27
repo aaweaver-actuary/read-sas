@@ -31,7 +31,6 @@ def mock_config():
 )
 @patch("pyreadstat.read_sas7bdat")
 def test_n_rows_in_sas7bdat_valid_inputs(
-    mock_format_filepath,
     mock_read_sas7bdat,
     mock_meta,
     filepath,
@@ -45,13 +44,13 @@ def test_n_rows_in_sas7bdat_valid_inputs(
     It checks that the function returns the correct number of rows.
     """
     # Mock the output of _format_filepath to return the filepath as Path object
-    mock_format_filepath.return_value = Path(filepath)
+    filepath = _format_filepath(Path(filepath), mock_config)
 
     # Mock the pyreadstat.read_sas7bdat to return the mock meta
     mock_read_sas7bdat.return_value = (None, mock_meta)
 
     # Call the function
-    result = n_rows_in_sas7bdat(filepath, column_list)
+    result = n_rows_in_sas7bdat(filepath, mock_config, column_list)
 
     # Check that the number of rows returned is correct
     assert result == expected_rows, f"Expected: {expected_rows}, Got: {result}"
@@ -64,12 +63,9 @@ def test_n_rows_in_sas7bdat_valid_inputs(
         "Execution time" in captured.out
     ), f"Expected 'Execution time' in output, Got: {captured.out}"
 
-    # Ensure _format_filepath was called with the correct arguments
-    mock_format_filepath.assert_called_once_with(filepath, mock_config)
-
     # Ensure pyreadstat.read_sas7bdat was called with the correct parameters
     mock_read_sas7bdat.assert_called_once_with(
-        mock_format_filepath.return_value,
+        filepath,
         disable_datetime_conversion=True,
         usecols=column_list,
         metadataonly=True,
@@ -85,22 +81,19 @@ def test_n_rows_in_sas7bdat_valid_inputs(
 )
 @patch("pyreadstat.read_sas7bdat", side_effect=FileNotFoundError)
 def test_n_rows_in_sas7bdat_file_not_found(
-    mock_format_filepath, mock_read_sas7bdat, filepath, column_list, mock_config
+    mock_read_sas7bdat, filepath, column_list, mock_config
 ):
     """Test that `n_rows_in_sas7bdat` raises appropriate exceptions when the file does not exist."""
     # Mock the _format_filepath to return the same filepath
-    mock_format_filepath.return_value = Path(filepath)
+    filepath = _format_filepath(Path(filepath), mock_config)
 
     # Expect a FileNotFoundError to be raised
     with pytest.raises(FileNotFoundError):
-        n_rows_in_sas7bdat(filepath, column_list)
-
-    # Ensure _format_filepath was called correctly
-    mock_format_filepath.assert_called_once_with(filepath, mock_config)
+        n_rows_in_sas7bdat(filepath, mock_config, column_list)
 
     # Ensure pyreadstat.read_sas7bdat was called with the correct parameters
     mock_read_sas7bdat.assert_called_once_with(
-        mock_format_filepath.return_value,
+        filepath,
         disable_datetime_conversion=True,
         usecols=column_list,
         metadataonly=True,
@@ -116,22 +109,19 @@ def test_n_rows_in_sas7bdat_file_not_found(
 )
 @patch("pyreadstat.read_sas7bdat", side_effect=ValueError)
 def test_n_rows_in_sas7bdat_invalid_column(
-    mock_format_filepath, mock_read_sas7bdat, filepath, column_list, mock_config
+    mock_read_sas7bdat, filepath, column_list, mock_config
 ):
     """Test that `n_rows_in_sas7bdat` raises a ValueError when invalid columns are selected."""
     # Mock the _format_filepath to return the same filepath
-    mock_format_filepath.return_value = Path(filepath)
+    filepath = _format_filepath(Path(filepath), mock_config)
 
     # Expect a ValueError to be raised for invalid columns
     with pytest.raises(ValueError):
-        n_rows_in_sas7bdat(filepath, column_list)
-
-    # Ensure _format_filepath was called correctly
-    mock_format_filepath.assert_called_once_with(filepath, mock_config)
+        n_rows_in_sas7bdat(filepath, mock_config, column_list)
 
     # Ensure pyreadstat.read_sas7bdat was called with the correct parameters
     mock_read_sas7bdat.assert_called_once_with(
-        mock_format_filepath.return_value,
+        filepath,
         disable_datetime_conversion=True,
         usecols=column_list,
         metadataonly=True,

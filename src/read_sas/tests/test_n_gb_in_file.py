@@ -1,16 +1,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from pathlib import Path
-from read_sas.src._config import Config
 from read_sas.src._n_gb_in_file import n_gb_in_file
-
-
-@pytest.fixture
-def mock_config():
-    """Fixture to create a mock Config object with a logger."""
-    mock = Mock(spec=Config)
-    mock.logger = Mock()  # Mock logger for error handling
-    return mock
 
 
 @pytest.mark.parametrize(
@@ -24,7 +15,7 @@ def mock_config():
 )
 @patch("pathlib.Path.stat")
 def test_n_gb_in_file_valid_inputs(
-    mock_stat, mock_config, filepath, file_size_bytes, expected_size_gb, capsys
+    mock_stat, filepath, file_size_bytes, expected_size_gb, capsys
 ):
     """Parameterized test for the `n_gb_in_file` function with valid inputs.
 
@@ -34,7 +25,7 @@ def test_n_gb_in_file_valid_inputs(
     mock_stat.return_value.st_size = file_size_bytes
 
     # Call the function
-    result = n_gb_in_file(filepath, config=mock_config)
+    result = n_gb_in_file(filepath)
 
     # Check that the correct size in GB is returned
     assert result == expected_size_gb, f"Expected: {expected_size_gb}, Got: {result}"
@@ -56,21 +47,13 @@ def test_n_gb_in_file_valid_inputs(
         ({}),  # Invalid type: dict
     ],
 )
-@patch(
-    "pathlib.Path.stat", side_effect=FileNotFoundError
-)  # Ensure stat doesn't get called for invalid cases
-def test_n_gb_in_file_invalid_inputs(mock_config, invalid_filepath):
+def test_n_gb_in_file_invalid_inputs(invalid_filepath):
     """Test for invalid inputs to `n_gb_in_file`.
 
     Expects a ValueError and logs an error when the input type is neither `str` nor `Path`.
     """
     with pytest.raises(ValueError):
-        n_gb_in_file(invalid_filepath, config=mock_config)
-
-    # Check that an error was logged
-    mock_config.logger.error.assert_called_once_with(
-        f"Invalid type for filepath: {type(invalid_filepath)}, expected str or Path."
-    )
+        n_gb_in_file(invalid_filepath)
 
 
 @pytest.mark.parametrize(
@@ -79,11 +62,7 @@ def test_n_gb_in_file_invalid_inputs(mock_config, invalid_filepath):
         ("nonexistent_file.txt")  # File does not exist, expect FileNotFoundError
     ],
 )
-@patch("pathlib.Path.stat", side_effect=FileNotFoundError)
-def test_n_gb_in_file_file_not_found(mock_config, filepath):
+def test_n_gb_in_file_file_not_found(filepath):
     """Test that `n_gb_in_file` raises an appropriate exception when the file does not exist."""
     with pytest.raises(FileNotFoundError):
-        n_gb_in_file(filepath, config=mock_config)
-
-    # Ensure no logging for non-existent files, this should raise directly
-    mock_config.logger.error.assert_not_called()
+        n_gb_in_file(filepath)

@@ -73,7 +73,7 @@ def test_was_file_created_in_last_week_input_conversion(
     mock_stat.return_value.st_ctime = (datetime.now() - timedelta(days=3)).timestamp()
 
     # Format the filepath
-    filepath = _format_filepath(filepath, Config())
+    filepath = _format_filepath(filepath)
 
     # Call the function
     _ = was_file_created_in_last_week(filepath)

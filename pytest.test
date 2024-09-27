@@ -1,0 +1,221 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.9, pytest-8.3.3, pluggy-1.5.0
+rootdir: /home/andy/dev/read-sas
+configfile: pyproject.toml
+collected 55 items / 53 deselected / 2 selected
+
+src/read_sas/tests/test_sas_reader.py FF                                 [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_sas_reader[3-False] ___________________________
+
+mock_calculate_chunk_size = <function _calculate_chunk_size at 0x7f1775a75c60>
+mock_n_gb_in_file = <function n_gb_in_file at 0x7f1775a76200>
+mock_n_rows_in_sas7bdat = <function n_rows_in_sas7bdat at 0x7f1775a76840>
+mock_format_filepath = <function _format_filepath at 0x7f1775a76de0>
+mock_read_file = <function _read_file at 0x7f1775a77420>
+mock_formatter = <Mock id='139738917256720'>
+mock_config = <Mock id='139739560727120'>
+mock_lazyframe = <Mock spec='LazyFrame' id='139738923117136'>, num_chunks = 3
+should_raise = False
+
+    @pytest.mark.parametrize(
+        "num_chunks, should_raise",
+        [
+            (3, False),  # Successfully process all chunks
+            (2, True),  # Simulate an error in one of the chunks
+        ],
+    )
+    # Updated patch paths based on where `sas_reader` accesses these functions
+    @patch("read_sas.src._sas_reader._read_file", autospec=True)
+    @patch("read_sas.src._sas_reader._format_filepath", autospec=True)
+    @patch("read_sas.src._sas_reader.n_rows_in_sas7bdat", autospec=True)
+    @patch("read_sas.src._sas_reader.n_gb_in_file", autospec=True)
+    @patch("read_sas.src._sas_reader._calculate_chunk_size", autospec=True)
+    def test_sas_reader(
+        mock_calculate_chunk_size,
+        mock_n_gb_in_file,
+        mock_n_rows_in_sas7bdat,
+        mock_format_filepath,
+        mock_read_file,
+        mock_formatter,
+        mock_config,
+        mock_lazyframe,
+        num_chunks,
+        should_raise,
+    ):
+        """Test `sas_reader` function with different scenarios.
+    
+        Test cases include:
+        - Successful processing of chunks.
+        - Handling of chunk errors.
+        """
+        # Set up the mock return values for each function
+        mock_format_filepath.return_value = Path("tinycopy.sas7bdat")
+        mock_n_rows_in_sas7bdat.return_value = 1000  # Mock number of rows
+        mock_n_gb_in_file.return_value = 1.0  # Mock file size in GB
+        mock_calculate_chunk_size.return_value = 250  # Mock chunk size
+    
+        # Add debug prints to verify the mock calls
+        print(f"mock_format_filepath called: {mock_format_filepath.called}")
+        print(f"mock_n_rows_in_sas7bdat called: {mock_n_rows_in_sas7bdat.called}")
+        print(f"mock_n_gb_in_file called: {mock_n_gb_in_file.called}")
+        print(f"mock_calculate_chunk_size called: {mock_calculate_chunk_size.called}")
+    
+        # Mock the `_read_file` generator to yield specific chunks
+        if should_raise:
+            # Simulate one chunk raising an exception
+            mock_read_file.return_value = [
+                (0, mock_lazyframe),
+                (1, mock_lazyframe),
+                (2, mock_lazyframe),  # This chunk will raise an exception
+            ]
+            # Mock the collect method to raise an exception for the third chunk
+            mock_lazyframe.collect.side_effect = [None, None, Exception("Chunk error")]
+        else:
+            # No errors in chunks, so the collect method does not raise any exceptions
+            mock_read_file.return_value = [(i, mock_lazyframe) for i in range(num_chunks)]
+            mock_lazyframe.collect.side_effect = [None] * num_chunks
+    
+        # Call the function under test
+>       result = sas_reader(
+            filepath="tinycopy.sas7bdat",
+            config=mock_config,
+            formatter=mock_formatter,
+            column_list=["col1", "col2"],
+        )
+
+src/read_sas/tests/test_sas_reader.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/read_sas/src/_timer.py:12: in wrapper
+    result = func(*args, **kwargs)
+src/read_sas/src/_sas_reader.py:52: in sas_reader
+    output: pl.LazyFrame = pl.concat(frames, how="vertical")
+.venv/lib/python3.11/site-packages/polars/functions/eager.py:214: in concat
+    plr.concat_lf(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock spec='LazyFrame' id='139738923117136'>, name = '_ldf'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+>               raise AttributeError("Mock object has no attribute %r" % name)
+E               AttributeError: Mock object has no attribute '_ldf'
+
+../../.rye/py/cpython@3.11.9/lib/python3.11/unittest/mock.py:653: AttributeError
+----------------------------- Captured stdout call -----------------------------
+mock_format_filepath called: False
+mock_n_rows_in_sas7bdat called: False
+mock_n_gb_in_file called: False
+mock_calculate_chunk_size called: False
+___________________________ test_sas_reader[2-True] ____________________________
+
+mock_calculate_chunk_size = <function _calculate_chunk_size at 0x7f1775ad2340>
+mock_n_gb_in_file = <function n_gb_in_file at 0x7f1775ad2a20>
+mock_n_rows_in_sas7bdat = <function n_rows_in_sas7bdat at 0x7f1775ad3060>
+mock_format_filepath = <function _format_filepath at 0x7f1775ad36a0>
+mock_read_file = <function _read_file at 0x7f1775ad3ce0>
+mock_formatter = <Mock id='139739560414544'>
+mock_config = <Mock id='139739560355216'>
+mock_lazyframe = <Mock spec='LazyFrame' id='139739560148496'>, num_chunks = 2
+should_raise = True
+
+    @pytest.mark.parametrize(
+        "num_chunks, should_raise",
+        [
+            (3, False),  # Successfully process all chunks
+            (2, True),  # Simulate an error in one of the chunks
+        ],
+    )
+    # Updated patch paths based on where `sas_reader` accesses these functions
+    @patch("read_sas.src._sas_reader._read_file", autospec=True)
+    @patch("read_sas.src._sas_reader._format_filepath", autospec=True)
+    @patch("read_sas.src._sas_reader.n_rows_in_sas7bdat", autospec=True)
+    @patch("read_sas.src._sas_reader.n_gb_in_file", autospec=True)
+    @patch("read_sas.src._sas_reader._calculate_chunk_size", autospec=True)
+    def test_sas_reader(
+        mock_calculate_chunk_size,
+        mock_n_gb_in_file,
+        mock_n_rows_in_sas7bdat,
+        mock_format_filepath,
+        mock_read_file,
+        mock_formatter,
+        mock_config,
+        mock_lazyframe,
+        num_chunks,
+        should_raise,
+    ):
+        """Test `sas_reader` function with different scenarios.
+    
+        Test cases include:
+        - Successful processing of chunks.
+        - Handling of chunk errors.
+        """
+        # Set up the mock return values for each function
+        mock_format_filepath.return_value = Path("tinycopy.sas7bdat")
+        mock_n_rows_in_sas7bdat.return_value = 1000  # Mock number of rows
+        mock_n_gb_in_file.return_value = 1.0  # Mock file size in GB
+        mock_calculate_chunk_size.return_value = 250  # Mock chunk size
+    
+        # Add debug prints to verify the mock calls
+        print(f"mock_format_filepath called: {mock_format_filepath.called}")
+        print(f"mock_n_rows_in_sas7bdat called: {mock_n_rows_in_sas7bdat.called}")
+        print(f"mock_n_gb_in_file called: {mock_n_gb_in_file.called}")
+        print(f"mock_calculate_chunk_size called: {mock_calculate_chunk_size.called}")
+    
+        # Mock the `_read_file` generator to yield specific chunks
+        if should_raise:
+            # Simulate one chunk raising an exception
+            mock_read_file.return_value = [
+                (0, mock_lazyframe),
+                (1, mock_lazyframe),
+                (2, mock_lazyframe),  # This chunk will raise an exception
+            ]
+            # Mock the collect method to raise an exception for the third chunk
+            mock_lazyframe.collect.side_effect = [None, None, Exception("Chunk error")]
+        else:
+            # No errors in chunks, so the collect method does not raise any exceptions
+            mock_read_file.return_value = [(i, mock_lazyframe) for i in range(num_chunks)]
+            mock_lazyframe.collect.side_effect = [None] * num_chunks
+    
+        # Call the function under test
+>       result = sas_reader(
+            filepath="tinycopy.sas7bdat",
+            config=mock_config,
+            formatter=mock_formatter,
+            column_list=["col1", "col2"],
+        )
+
+src/read_sas/tests/test_sas_reader.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/read_sas/src/_timer.py:12: in wrapper
+    result = func(*args, **kwargs)
+src/read_sas/src/_sas_reader.py:52: in sas_reader
+    output: pl.LazyFrame = pl.concat(frames, how="vertical")
+.venv/lib/python3.11/site-packages/polars/functions/eager.py:214: in concat
+    plr.concat_lf(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Mock spec='LazyFrame' id='139739560148496'>, name = '_ldf'
+
+    def __getattr__(self, name):
+        if name in {'_mock_methods', '_mock_unsafe'}:
+            raise AttributeError(name)
+        elif self._mock_methods is not None:
+            if name not in self._mock_methods or name in _all_magics:
+>               raise AttributeError("Mock object has no attribute %r" % name)
+E               AttributeError: Mock object has no attribute '_ldf'
+
+../../.rye/py/cpython@3.11.9/lib/python3.11/unittest/mock.py:653: AttributeError
+----------------------------- Captured stdout call -----------------------------
+mock_format_filepath called: False
+mock_n_rows_in_sas7bdat called: False
+mock_n_gb_in_file called: False
+mock_calculate_chunk_size called: False
+=========================== short test summary info ============================
+FAILED src/read_sas/tests/test_sas_reader.py::test_sas_reader[3-False] - Attr...
+FAILED src/read_sas/tests/test_sas_reader.py::test_sas_reader[2-True] - Attri...
+======================= 2 failed, 53 deselected in 0.70s =======================

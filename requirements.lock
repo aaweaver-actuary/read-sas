@@ -9,12 +9,20 @@
 #   generate-hashes: false
 
 -e file:.
+lxml==5.3.0
+    # via read-sas
 numpy==2.1.1
     # via pandas
+    # via pandas-stubs
+    # via pyarrow
 pandas==2.2.3
     # via pyreadstat
     # via read-sas
+pandas-stubs==2.2.2.240909
+    # via read-sas
 polars==1.8.2
+    # via read-sas
+pyarrow==17.0.0
     # via read-sas
 pyreadstat==1.2.7
     # via read-sas
@@ -24,5 +32,7 @@ pytz==2024.2
     # via pandas
 six==1.16.0
     # via python-dateutil
+types-pytz==2024.2.0.20240913
+    # via pandas-stubs
 tzdata==2024.2
     # via pandas

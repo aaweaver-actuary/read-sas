@@ -18,7 +18,6 @@ def mock_config():
         (1000, 1.0, None, 100),  # default config chunk size
         (1000, 2.0, 0.5, 250),  # non-default chunk size
         (5000, 1.0, 0.1, 500),  # larger file, small chunk size
-        (1000, 1.0, None, 100),  # using default config chunk size
         (1000, 0.5, 0.2, 400),  # smaller file size, non-default chunk size
         (1000, 2.0, None, 50),  # large file, default chunk size
     ],
@@ -26,8 +25,8 @@ def mock_config():
 def test_calculate_chunk_size(
     mock_config, n_rows_in_file, file_size_in_gb, chunk_size_in_gb, expected_chunk_size
 ):
-    """
-    Parameterized test for the `_calculate_chunk_size` function.
+    """Parameterized test for the `_calculate_chunk_size` function.
+
     Covers edge cases like 0 rows, small and large file sizes, and using default config values.
     """
     # Override config.chunk_size_in_gb if chunk_size_in_gb is provided
@@ -57,8 +56,8 @@ def test_calculate_chunk_size(
 def test_calculate_chunk_size_invalid_inputs(
     mock_config, n_rows_in_file, file_size_in_gb, chunk_size_in_gb
 ):
-    """
-    Test for invalid inputs such as file size of zero or negative chunk size.
+    """Test for invalid inputs such as file size of zero or negative chunk size.
+
     These should raise appropriate errors (ValueError, ZeroDivisionError).
     """
     with pytest.raises((ZeroDivisionError, ValueError)):

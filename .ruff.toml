@@ -1,4 +1,5 @@
 exclude = [
+    ".test",
     ".bzr",
     ".direnv",
     ".eggs",
@@ -31,20 +32,17 @@ exclude = [
     ".ignore",
     ".ignore/*"
 ]
-
 # Same as Black.
 line-length = 88
 indent-width = 4
-
 # Assume Python 3.8
 target-version = "py38"
 fix = true
 extend-include = ["*.ipynb"]
 
-
 [format]
-docstring-code-format = true     # Enable reformatting of code snippets in docstrings.
-docstring-code-line-length = 75  # Format all docstring code snippets with a line length of 75
+docstring-code-format = true # Enable reformatting of code snippets in docstrings.
+docstring-code-line-length = 75 # Format all docstring code snippets with a line length of 75
 skip-magic-trailing-comma = true
 
 [lint]
@@ -78,7 +76,6 @@ ignore = [
     "S101",
     "S501",
 ]
-
 # On top of the default `select` (`E`, `F`), enable:
 # flake8-bugbear (`B`)
 # flake8-quotes (`Q`)
@@ -189,7 +186,6 @@ extend-fixable = [
 ]
 unfixable = ["F401"] # Disable fix for unused imports (`F401`).
 
-
 [lint.per-file-ignores]
 "__init__.py" = ["E402", "I001", "D104"]
 "**/{tests,docs,tools}/*" = [
@@ -227,16 +223,15 @@ banned-from = [
 ]
 
 [lint.flake8-import-conventions.extend-aliases]
-"polars" = "pl"               # Allow "pl" as an alias for "polars"
-"polars.selectors" = "cs"     # Allow "cs" as an alias for "polars.selectors" -- this follows API conventions in Polars
-"plotly.express" = "px"       # Allow "px" as an alias for "plotly.express"
+"polars" = "pl" # Allow "pl" as an alias for "polars"
+"polars.selectors" = "cs" # Allow "cs" as an alias for "polars.selectors" -- this follows API conventions in Polars
+"plotly.express" = "px" # Allow "px" as an alias for "plotly.express"
 "plotly.graph_objects" = "go" # Allow "go" as an alias for "plotly.graph_objects"
 
 [lint.flake8-pytest-style]
 # @pytest.fixture functions should not have parentheses in their names
 # (e.g. `@pytest.fixture()` is not allowed).
 fixture-parentheses = false
-
 # @pytest.mark.parametrize parameter names should be a comma-separated list
 # (e.g. `@pytest.mark.parametrize("a, b", [(1, 2), (3, 4)])` is allowed, but
 # `@pytest.mark.parametrize("a b", [(1, 2), (3, 4)])` is not).

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from read_sas.src._config import Config
 
 

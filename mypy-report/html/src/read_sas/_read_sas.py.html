@@ -68,6 +68,24 @@
 <span id="L58" class="lineno"><a class="lineno" href="#L58">58</a></span>
 <span id="L59" class="lineno"><a class="lineno" href="#L59">59</a></span>
 <span id="L60" class="lineno"><a class="lineno" href="#L60">60</a></span>
+<span id="L61" class="lineno"><a class="lineno" href="#L61">61</a></span>
+<span id="L62" class="lineno"><a class="lineno" href="#L62">62</a></span>
+<span id="L63" class="lineno"><a class="lineno" href="#L63">63</a></span>
+<span id="L64" class="lineno"><a class="lineno" href="#L64">64</a></span>
+<span id="L65" class="lineno"><a class="lineno" href="#L65">65</a></span>
+<span id="L66" class="lineno"><a class="lineno" href="#L66">66</a></span>
+<span id="L67" class="lineno"><a class="lineno" href="#L67">67</a></span>
+<span id="L68" class="lineno"><a class="lineno" href="#L68">68</a></span>
+<span id="L69" class="lineno"><a class="lineno" href="#L69">69</a></span>
+<span id="L70" class="lineno"><a class="lineno" href="#L70">70</a></span>
+<span id="L71" class="lineno"><a class="lineno" href="#L71">71</a></span>
+<span id="L72" class="lineno"><a class="lineno" href="#L72">72</a></span>
+<span id="L73" class="lineno"><a class="lineno" href="#L73">73</a></span>
+<span id="L74" class="lineno"><a class="lineno" href="#L74">74</a></span>
+<span id="L75" class="lineno"><a class="lineno" href="#L75">75</a></span>
+<span id="L76" class="lineno"><a class="lineno" href="#L76">76</a></span>
+<span id="L77" class="lineno"><a class="lineno" href="#L77">77</a></span>
+<span id="L78" class="lineno"><a class="lineno" href="#L78">78</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from __future__ import annotations</span>
 <span class="line-precise" title="No Anys on this line!">from typing import Callable</span>
@@ -120,6 +138,11 @@ Explicit (x2)">        self._reader: pl.LazyFrame = sas_reader(</span>
 <span class="line-empty" title="No Anys on this line!">        """Return the list of columns to read from the file."""</span>
 <span class="line-precise" title="No Anys on this line!">        return self._column_list</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">    @property</span>
+<span class="line-precise" title="No Anys on this line!">    def formatter(self) -&gt; Callable[[pl.LazyFrame], pl.LazyFrame] | None:</span>
+<span class="line-empty" title="No Anys on this line!">        """Return the formatter function."""</span>
+<span class="line-precise" title="No Anys on this line!">        return self._formatter if self._formatter is not None else (lambda df: df)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x2)
 Explicit (x4)">    @timer</span>
@@ -129,14 +152,27 @@ Explicit (x4)">    @timer</span>
 <span class="line-precise" title="No Anys on this line!">        folder = self.config.temp_dir_parent / f"temp__{filename}"</span>
 <span class="line-precise" title="No Anys on this line!">        folder.mkdir(parents=True, exist_ok=True)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        if was_file_created_in_last_week(folder / f"{filename}.parquet"):</span>
+<span class="line-precise" title="No Anys on this line!">        can_use_previously_created_file = was_file_created_in_last_week(</span>
+<span class="line-precise" title="No Anys on this line!">            folder / f"{filename}.parquet"</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">        if can_use_previously_created_file:</span>
+<span class="line-empty" title="No Anys on this line!">            try:</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">            return pl.read_parquet(folder / f"{filename}.parquet")</span>
+Explicit (x2)">                return pl.read_parquet(folder / f"{filename}.parquet")</span>
+<span class="line-precise" title="No Anys on this line!">            except Exception as e:</span>
+<span class="line-precise" title="No Anys on this line!">                self.config.logger.warning(</span>
+<span class="line-precise" title="No Anys on this line!">                    f"Failed to read the parquet file. Error: {e}. Reading the SAS file again."</span>
+<span class="line-empty" title="No Anys on this line!">                )</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        self.reader.collect().write_parquet(folder / f"{filename}.parquet")</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">        return pl.read_parquet(folder / f"{filename}.parquet")</span>
+Explicit (x2)">            return pl.read_parquet(folder / f"{filename}.parquet")</span>
+<span class="line-precise" title="No Anys on this line!">        except Exception as e:</span>
+<span class="line-precise" title="No Anys on this line!">            self.config.logger.error(f"Failed to read the parquet file. Error: {e}.")</span>
+<span class="line-precise" title="No Anys on this line!">            raise e</span>
 </pre></td>
 </tr></tbody>
 </table>

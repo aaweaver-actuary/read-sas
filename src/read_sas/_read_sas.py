@@ -46,6 +46,11 @@ class ReadSas:
         """Return the list of columns to read from the file."""
         return self._column_list
 
+    @property
+    def formatter(self) -> Callable[[pl.LazyFrame], pl.LazyFrame] | None:
+        """Return the formatter function."""
+        return self._formatter if self._formatter is not None else (lambda df: df)
+
     @timer
     def run(self) -> pl.DataFrame:
         """Run the reader and return the collected DataFrame."""
@@ -53,8 +58,21 @@ class ReadSas:
         folder = self.config.temp_dir_parent / f"temp__{filename}"
         folder.mkdir(parents=True, exist_ok=True)
 
-        if was_file_created_in_last_week(folder / f"{filename}.parquet"):
-            return pl.read_parquet(folder / f"{filename}.parquet")
+        can_use_previously_created_file = was_file_created_in_last_week(
+            folder / f"{filename}.parquet"
+        )
+
+        if can_use_previously_created_file:
+            try:
+                return pl.read_parquet(folder / f"{filename}.parquet")
+            except Exception as e:
+                self.config.logger.warning(
+                    f"Failed to read the parquet file. Error: {e}. Reading the SAS file again."
+                )
 
         self.reader.collect().write_parquet(folder / f"{filename}.parquet")
-        return pl.read_parquet(folder / f"{filename}.parquet")
+        try:
+            return pl.read_parquet(folder / f"{filename}.parquet")
+        except Exception as e:
+            self.config.logger.error(f"Failed to read the parquet file. Error: {e}.")
+            raise e

@@ -260,13 +260,16 @@ Unimported (x1)
 Explicit (x2)">    assert isinstance(result, pl.LazyFrame), f"Expected LazyFrame, got {type(result)}"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">    # Check logger interactions</span>
-<span class="line-empty" title="No Anys on this line!">    if should_raise:</span>
-<span class="line-empty" title="No Anys on this line!">        pass</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    if should_raise:</span>
+<span class="line-any" title="No Anys on this line!">        pass</span>
 <span class="line-empty" title="No Anys on this line!">    else:</span>
 <span class="line-empty" title="No Anys on this line!">        # Ensure no errors were logged</span>
 <span class="line-empty" title="No Anys on this line!">        assert (</span>
-<span class="line-empty" title="No Anys on this line!">            mock_config.logger.debug.call_count &gt;= num_chunks</span>
-<span class="line-empty" title="No Anys on this line!">        ), f"Expected {num_chunks} debug calls, got {mock_config.logger.debug.call_count}"</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x6)">            mock_config.logger.debug.call_count &gt;= num_chunks</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x11)">        ), f"Expected {num_chunks} debug calls, got {mock_config.logger.debug.call_count}"</span>
 </pre></td>
 </tr></tbody>
 </table>

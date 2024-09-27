@@ -58,9 +58,12 @@ class ReadSas:
         folder = self.config.temp_dir_parent / f"temp__{filename}"
         folder.mkdir(parents=True, exist_ok=True)
 
-        can_use_previously_created_file = was_file_created_in_last_week(
-            folder / f"{filename}.parquet"
-        )
+        try:
+            can_use_previously_created_file = was_file_created_in_last_week(
+                folder / f"{filename}.parquet"
+            )
+        except Exception as _:
+            can_use_previously_created_file = False
 
         if can_use_previously_created_file:
             try:

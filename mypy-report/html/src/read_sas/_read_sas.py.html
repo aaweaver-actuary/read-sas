@@ -86,6 +86,9 @@
 <span id="L76" class="lineno"><a class="lineno" href="#L76">76</a></span>
 <span id="L77" class="lineno"><a class="lineno" href="#L77">77</a></span>
 <span id="L78" class="lineno"><a class="lineno" href="#L78">78</a></span>
+<span id="L79" class="lineno"><a class="lineno" href="#L79">79</a></span>
+<span id="L80" class="lineno"><a class="lineno" href="#L80">80</a></span>
+<span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from __future__ import annotations</span>
 <span class="line-precise" title="No Anys on this line!">from typing import Callable</span>
@@ -152,9 +155,13 @@ Explicit (x4)">    @timer</span>
 <span class="line-precise" title="No Anys on this line!">        folder = self.config.temp_dir_parent / f"temp__{filename}"</span>
 <span class="line-precise" title="No Anys on this line!">        folder.mkdir(parents=True, exist_ok=True)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        can_use_previously_created_file = was_file_created_in_last_week(</span>
-<span class="line-precise" title="No Anys on this line!">            folder / f"{filename}.parquet"</span>
-<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            can_use_previously_created_file = was_file_created_in_last_week(</span>
+<span class="line-precise" title="No Anys on this line!">                folder / f"{filename}.parquet"</span>
+<span class="line-empty" title="No Anys on this line!">            )</span>
+<span class="line-precise" title="No Anys on this line!">        except Exception as _:</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x1)">            can_use_previously_created_file = False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        if can_use_previously_created_file:</span>
 <span class="line-empty" title="No Anys on this line!">            try:</span>

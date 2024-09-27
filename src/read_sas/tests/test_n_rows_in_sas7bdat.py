@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 from pathlib import Path
 import pyreadstat
 from read_sas.src._n_rows_in_sas7bdat import n_rows_in_sas7bdat
+from read_sas.src.__format_filepath import _format_filepath
 from read_sas.src._config import Config
 
 
@@ -29,7 +30,6 @@ def mock_config():
     ],
 )
 @patch("pyreadstat.read_sas7bdat")
-@patch("read_sas.src.__format_filepath._format_filepath")  # Mock filepath conversion
 def test_n_rows_in_sas7bdat_valid_inputs(
     mock_format_filepath,
     mock_read_sas7bdat,
@@ -84,7 +84,6 @@ def test_n_rows_in_sas7bdat_valid_inputs(
     ],
 )
 @patch("pyreadstat.read_sas7bdat", side_effect=FileNotFoundError)
-@patch("read_sas.src.__format_filepath._format_filepath")  # Mock filepath conversion
 def test_n_rows_in_sas7bdat_file_not_found(
     mock_format_filepath, mock_read_sas7bdat, filepath, column_list, mock_config
 ):
@@ -116,7 +115,6 @@ def test_n_rows_in_sas7bdat_file_not_found(
     ],
 )
 @patch("pyreadstat.read_sas7bdat", side_effect=ValueError)
-@patch("read_sas.src.__format_filepath._format_filepath")  # Mock filepath conversion
 def test_n_rows_in_sas7bdat_invalid_column(
     mock_format_filepath, mock_read_sas7bdat, filepath, column_list, mock_config
 ):

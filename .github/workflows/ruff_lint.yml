@@ -38,7 +38,13 @@ jobs:
         id: ruff_lint
         run: |
           # Run Ruff and get statistics in plain text
-          ruff check . --config .ruff.toml --statistics > lint-results.txt
+          ruff check . --config .ruff.toml > lint-results.txt
+
+      - name: Upload lint results
+        uses: actions/upload-artifact@v4
+        id: upload-lint-results
+        with:
+          name: lint-results
 
           # # Extract number of files and issues from the statistics
           # TOTAL_FILES=$(grep "files" lint-results.txt | grep -o '[0-9]\+')
@@ -67,10 +73,3 @@ jobs:
         with:
           name: lint-badge
           path: badge.svg
-
-      # Upload lint results to repo (optional step to store the lint results in the repo)
-      - name: Upload Lint Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-results
-          path: lint-results.txt

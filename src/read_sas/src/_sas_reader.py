@@ -35,7 +35,7 @@ def sas_reader(
             config.logger.debug(
                 f"Was not able to process chunk: {i}. Searching for column errors."
             )
-            for col in lf.columns:
+            for col in lf.collect_schema().names():
                 try:
                     lf.select(col).collect()
                     config.logger.debug(f"Able to process column: {col}")

@@ -1,7 +1,7 @@
 [project]
 name = "read-sas"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.1.1"
+description = "Utility to read in a sas7bdat file."
 authors = [{ name = "Andy Weaver", email = "andrewayersweaver@gmail.com" }]
 dependencies = [
     "pandas>=2.0",
@@ -18,7 +18,13 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = ["pytest>=8.3.3", "mypy>=1.11.2"]
+dev-dependencies = [
+    "pytest>=8.3.3",
+    "mypy>=1.11.2",
+    "ruff>=0.6.8",
+    "lxml>=5.3.0",
+    "pandas-stubs>=2.2.2.240909",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true

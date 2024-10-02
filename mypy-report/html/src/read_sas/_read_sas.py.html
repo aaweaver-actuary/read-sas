@@ -89,16 +89,39 @@
 <span id="L79" class="lineno"><a class="lineno" href="#L79">79</a></span>
 <span id="L80" class="lineno"><a class="lineno" href="#L80">80</a></span>
 <span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
+<span id="L82" class="lineno"><a class="lineno" href="#L82">82</a></span>
+<span id="L83" class="lineno"><a class="lineno" href="#L83">83</a></span>
+<span id="L84" class="lineno"><a class="lineno" href="#L84">84</a></span>
+<span id="L85" class="lineno"><a class="lineno" href="#L85">85</a></span>
+<span id="L86" class="lineno"><a class="lineno" href="#L86">86</a></span>
+<span id="L87" class="lineno"><a class="lineno" href="#L87">87</a></span>
+<span id="L88" class="lineno"><a class="lineno" href="#L88">88</a></span>
+<span id="L89" class="lineno"><a class="lineno" href="#L89">89</a></span>
+<span id="L90" class="lineno"><a class="lineno" href="#L90">90</a></span>
+<span id="L91" class="lineno"><a class="lineno" href="#L91">91</a></span>
+<span id="L92" class="lineno"><a class="lineno" href="#L92">92</a></span>
+<span id="L93" class="lineno"><a class="lineno" href="#L93">93</a></span>
+<span id="L94" class="lineno"><a class="lineno" href="#L94">94</a></span>
+<span id="L95" class="lineno"><a class="lineno" href="#L95">95</a></span>
+<span id="L96" class="lineno"><a class="lineno" href="#L96">96</a></span>
+<span id="L97" class="lineno"><a class="lineno" href="#L97">97</a></span>
+<span id="L98" class="lineno"><a class="lineno" href="#L98">98</a></span>
+<span id="L99" class="lineno"><a class="lineno" href="#L99">99</a></span>
+<span id="L100" class="lineno"><a class="lineno" href="#L100">100</a></span>
+<span id="L101" class="lineno"><a class="lineno" href="#L101">101</a></span>
+<span id="L102" class="lineno"><a class="lineno" href="#L102">102</a></span>
+<span id="L103" class="lineno"><a class="lineno" href="#L103">103</a></span>
+<span id="L104" class="lineno"><a class="lineno" href="#L104">104</a></span>
+<span id="L105" class="lineno"><a class="lineno" href="#L105">105</a></span>
+<span id="L106" class="lineno"><a class="lineno" href="#L106">106</a></span>
+<span id="L107" class="lineno"><a class="lineno" href="#L107">107</a></span>
+<span id="L108" class="lineno"><a class="lineno" href="#L108">108</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from __future__ import annotations</span>
+<span class="line-precise" title="No Anys on this line!">import time</span>
 <span class="line-precise" title="No Anys on this line!">from typing import Callable</span>
-<span class="line-precise" title="No Anys on this line!">from read_sas.src import (</span>
-<span class="line-empty" title="No Anys on this line!">    Config,</span>
-<span class="line-empty" title="No Anys on this line!">    timer,</span>
-<span class="line-empty" title="No Anys on this line!">    sas_reader,</span>
-<span class="line-empty" title="No Anys on this line!">    _format_filepath,</span>
-<span class="line-empty" title="No Anys on this line!">    was_file_created_in_last_week,</span>
-<span class="line-empty" title="No Anys on this line!">)</span>
+<span class="line-precise" title="No Anys on this line!">from read_sas.src import Config, timer, sas_reader, _format_filepath</span>
+<span class="line-precise" title="No Anys on this line!">import pandas as pd</span>
 <span class="line-precise" title="No Anys on this line!">import polars as pl</span>
 <span class="line-precise" title="No Anys on this line!">from pathlib import Path</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -119,10 +142,20 @@ Omitted Generics (x2)">    def __init__(</span>
 Omitted Generics (x4)">        self._config = Config(**(config_kwargs or {}))</span>
 <span class="line-precise" title="No Anys on this line!">        self._formatter = formatter</span>
 <span class="line-precise" title="No Anys on this line!">        self._column_list = column_list</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">        start = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self._config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Started reading the file: {self._filename} at {start}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x2)">        self._reader: pl.LazyFrame = sas_reader(</span>
 <span class="line-precise" title="No Anys on this line!">            self._filename, self._config, self._formatter, self._column_list</span>
 <span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="No Anys on this line!">        end = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self._config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Finished reading the file: {self._filename} at {end}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="No Anys on this line!">        self._config.logger.info(f"Time taken to read the file: {end - start} seconds.")</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">    @property</span>
 <span class="line-precise" title="No Anys on this line!">    def filename(self) -&gt; Path:</span>
@@ -149,36 +182,57 @@ Explicit (x2)">        self._reader: pl.LazyFrame = sas_reader(</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x2)
 Explicit (x4)">    @timer</span>
-<span class="line-precise" title="No Anys on this line!">    def run(self) -&gt; pl.DataFrame:</span>
+<span class="line-precise" title="No Anys on this line!">    def run(self) -&gt; pd.DataFrame:</span>
 <span class="line-empty" title="No Anys on this line!">        """Run the reader and return the collected DataFrame."""</span>
 <span class="line-precise" title="No Anys on this line!">        filename = self.filename.stem</span>
 <span class="line-precise" title="No Anys on this line!">        folder = self.config.temp_dir_parent / f"temp__{filename}"</span>
 <span class="line-precise" title="No Anys on this line!">        folder.mkdir(parents=True, exist_ok=True)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">        try:</span>
-<span class="line-precise" title="No Anys on this line!">            can_use_previously_created_file = was_file_created_in_last_week(</span>
-<span class="line-precise" title="No Anys on this line!">                folder / f"{filename}.parquet"</span>
-<span class="line-empty" title="No Anys on this line!">            )</span>
-<span class="line-precise" title="No Anys on this line!">        except Exception as _:</span>
-<span class="line-precise" title="No Anys on this line!">            can_use_previously_created_file = False</span>
+<span class="line-precise" title="No Anys on this line!">        start = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Collecting the DataFrame from the reader started at {start}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="No Anys on this line!">        df = self.reader.collect()</span>
+<span class="line-precise" title="No Anys on this line!">        end = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Collecting the DataFrame from the reader finished at {end}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Time taken to collect the DataFrame: {end - start} seconds."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        if can_use_previously_created_file:</span>
+<span class="line-precise" title="No Anys on this line!">        start = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Writing the DataFrame to a parquet file started at {start}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        df.write_parquet(folder / f"{filename}.parquet")</span>
+<span class="line-precise" title="No Anys on this line!">        end = time.time()</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Writing the DataFrame to a parquet file finished at {end}."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-precise" title="No Anys on this line!">        self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">            f"Time taken to write the DataFrame to a parquet file: {end - start} seconds."</span>
+<span class="line-empty" title="No Anys on this line!">        )</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            self.config.logger.info(</span>
+<span class="line-precise" title="No Anys on this line!">                "Trying to convert the DataFrame to pandas to return."</span>
+<span class="line-empty" title="No Anys on this line!">            )</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            return df.to_pandas()</span>
+<span class="line-precise" title="No Anys on this line!">        except Exception as e1:</span>
+<span class="line-precise" title="No Anys on this line!">            self.config.logger.error(</span>
+<span class="line-precise" title="No Anys on this line!">                f"Failed to convert the DataFrame to pandas. Error: {e1}."</span>
+<span class="line-empty" title="No Anys on this line!">            )</span>
 <span class="line-empty" title="No Anys on this line!">            try:</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">                return pl.read_parquet(folder / f"{filename}.parquet")</span>
+Explicit (x3)">                return pl.read_parquet(folder / f"{filename}.parquet").to_pandas()</span>
 <span class="line-precise" title="No Anys on this line!">            except Exception as e:</span>
-<span class="line-precise" title="No Anys on this line!">                self.config.logger.warning(</span>
-<span class="line-precise" title="No Anys on this line!">                    f"Failed to read the parquet file. Error: {e}. Reading the SAS file again."</span>
+<span class="line-precise" title="No Anys on this line!">                self.config.logger.error(</span>
+<span class="line-precise" title="No Anys on this line!">                    f"Failed to read the parquet file. Error: {e}."</span>
 <span class="line-empty" title="No Anys on this line!">                )</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">        self.reader.collect().write_parquet(folder / f"{filename}.parquet")</span>
-<span class="line-empty" title="No Anys on this line!">        try:</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">            return pl.read_parquet(folder / f"{filename}.parquet")</span>
-<span class="line-precise" title="No Anys on this line!">        except Exception as e:</span>
-<span class="line-precise" title="No Anys on this line!">            self.config.logger.error(f"Failed to read the parquet file. Error: {e}.")</span>
-<span class="line-precise" title="No Anys on this line!">            raise e</span>
+<span class="line-precise" title="No Anys on this line!">                raise e</span>
 </pre></td>
 </tr></tbody>
 </table>

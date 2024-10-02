@@ -47,6 +47,7 @@ def sas_reader(
     config.logger.info("All chunks processed. Concatenating frames.")
 
     if (not frames) or (len(frames) == 0):
+        config.logger.debug("No frames to concatenate. Returning empty frame.")
         return pl.LazyFrame()
 
     output: pl.LazyFrame = pl.concat(frames, how="vertical")

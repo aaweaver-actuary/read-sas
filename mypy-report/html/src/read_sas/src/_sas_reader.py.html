@@ -64,6 +64,7 @@
 <span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
 <span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
 <span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from __future__ import annotations</span>
 <span class="line-precise" title="No Anys on this line!">from typing import Callable</span>
@@ -107,7 +108,7 @@ Explicit (x2)">    for i, lf in _read_file(filepath, chunk_size, column_list, co
 <span class="line-precise" title="No Anys on this line!">            config.logger.debug(</span>
 <span class="line-precise" title="No Anys on this line!">                f"Was not able to process chunk: {i}. Searching for column errors."</span>
 <span class="line-empty" title="No Anys on this line!">            )</span>
-<span class="line-precise" title="No Anys on this line!">            for col in lf.columns:</span>
+<span class="line-precise" title="No Anys on this line!">            for col in lf.collect_schema().names():</span>
 <span class="line-empty" title="No Anys on this line!">                try:</span>
 <span class="line-precise" title="No Anys on this line!">                    lf.select(col).collect()</span>
 <span class="line-precise" title="No Anys on this line!">                    config.logger.debug(f"Able to process column: {col}")</span>
@@ -119,6 +120,7 @@ Explicit (x2)">    for i, lf in _read_file(filepath, chunk_size, column_list, co
 <span class="line-precise" title="No Anys on this line!">    config.logger.info("All chunks processed. Concatenating frames.")</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    if (not frames) or (len(frames) == 0):</span>
+<span class="line-precise" title="No Anys on this line!">        config.logger.debug("No frames to concatenate. Returning empty frame.")</span>
 <span class="line-precise" title="Any Types on this line: 
 Unimported (x1)">        return pl.LazyFrame()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
